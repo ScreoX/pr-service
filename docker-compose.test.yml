@@ -1,0 +1,33 @@
+services:
+  test-postgres:
+    image: postgres:15-alpine
+    container_name: pr-service-test-db
+    environment:
+      POSTGRES_DB: ${TEST_DB_NAME}
+      POSTGRES_USER: ${TEST_DB_USER}
+      POSTGRES_PASSWORD: ${TEST_DB_PASSWORD}
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "${TEST_DB_PORT}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${TEST_DB_USER} -d ${TEST_DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  test-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pr-service-test-app
+    environment:
+      DB_HOST: test-postgres
+      DB_PORT: 5432
+      DB_NAME: ${TEST_DB_NAME}
+      DB_USER: ${TEST_DB_USER}
+      DB_PASSWORD: ${TEST_DB_PASSWORD}
+      APP_PORT: ${TEST_APP_PORT}
+    depends_on:
+      test-postgres:
+        condition: service_healthy
+    command: ["sleep", "infinity"]
