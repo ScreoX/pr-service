@@ -1,4 +1,4 @@
-.PHONY: lint up down down-clean start build test test-unit test-integration test-down
+.PHONY: lint lint-install build up down down-clean migrate start test test-unit test-integration test-down
 
 include .env
 export
