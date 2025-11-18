@@ -1,6 +1,7 @@
 .PHONY: lint lint-install build up down down-clean start start-with-build test test-unit test-integration test-down
 
 include .env
+include .env.test
 export
 
 lint-install:
